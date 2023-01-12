@@ -1,0 +1,4 @@
+[submodule "verilog/rtl/minimax"]
+	path = verilog/rtl/minimax
+	url = https://github.com/xobs/minimax.git
+	branch = verilog-rewrite

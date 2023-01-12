@@ -33,7 +33,7 @@ export PDKPATH?=$(PDK_ROOT)/$(PDK)
 ifeq ($(PDK),sky130A)
 	SKYWATER_COMMIT=f70d8ca46961ff92719d8870a18a076370b85f6c
 	export OPEN_PDKS_COMMIT?=0059588eebfc704681dc2368bd1d33d96281d10f
-	export OPENLANE_TAG?=2022.11.19
+	export OPENLANE_TAG?=2023.01.03
 	MPW_TAG ?= mpw-8c
 
 ifeq ($(CARAVEL_LITE),1)
@@ -51,7 +51,7 @@ endif
 ifeq ($(PDK),sky130B)
 	SKYWATER_COMMIT=f70d8ca46961ff92719d8870a18a076370b85f6c
 	export OPEN_PDKS_COMMIT?=0059588eebfc704681dc2368bd1d33d96281d10f
-	export OPENLANE_TAG?=2022.11.19
+	export OPENLANE_TAG?=2023.01.03
 	MPW_TAG ?= mpw-8c
 
 ifeq ($(CARAVEL_LITE),1)
@@ -74,7 +74,7 @@ ifeq ($(PDK),gf180mcuC)
 	CARAVEL_TAG := $(MPW_TAG)
 	#OPENLANE_TAG=ddfeab57e3e8769ea3d40dda12be0460e09bb6d9
 	export OPEN_PDKS_COMMIT?=0059588eebfc704681dc2368bd1d33d96281d10f
-	export OPENLANE_TAG?=2022.11.19
+	export OPENLANE_TAG?=2023.01.03
 
 endif
 
@@ -267,7 +267,7 @@ export PROJECT_ROOT=$(CUP_ROOT)
 timing-scripts-repo=https://github.com/efabless/timing-scripts.git
 
 $(TIMING_ROOT):
-	@mkdir -p $(CUP_ROOT)/dependencies
+	@mkdir -p $(TIMING_ROOT)
 	@git clone $(timing-scripts-repo) $(TIMING_ROOT)
 
 .PHONY: setup-timing-scripts
