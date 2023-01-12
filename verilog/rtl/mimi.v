@@ -35,8 +35,16 @@
  *-------------------------------------------------------------
  */
 
-module user_proj_example #(
-    parameter BITS = 32
+`ifdef ENABLE_TRACE
+`define TRACE 1'b1
+`else
+`define TRACE 1'b0
+`endif
+
+module mimi #(
+    parameter PC_BITS = 10,
+    parameter UC_BASE = 32'h0000200,
+    parameter TRACE = `TRACE,
 )(
 `ifdef USE_POWER_PINS
     inout vccd1,	// User area 1 1.8V supply
@@ -77,89 +85,154 @@ module user_proj_example #(
 
     wire [31:0] rdata; 
     wire [31:0] wdata;
-    wire [BITS-1:0] count;
 
     wire valid;
     wire [3:0] wstrb;
     wire [31:0] la_write;
 
-    // WB MI A
-    assign valid = wbs_cyc_i && wbs_stb_i; 
+    // Our wishbone base is a window at 0x3000_0000
+    assign valid = wbs_cyc_i && wbs_stb_i && wbs_adr_i[31:16] == 16'h3000; 
     assign wstrb = wbs_sel_i & {4{wbs_we_i}};
     assign wbs_dat_o = rdata;
     assign wdata = wbs_dat_i;
+
+    wire cpu_clk, mem_clk;
+    assign cpu_clk = wb_clk_i;
+    assign mem_clk = ~wb_clk_i;
+
+    wire cpu_reset, mem_reset;
+    assign cpu_reset = wb_rst_i;
+    assign mem_reset = wb_rst_i;
 
     // IO
     assign io_out = count;
     assign io_oeb = {(`MPRJ_IO_PADS-1){rst}};
 
+    wire clk_en;
+    assign clk_en = la_oenb[64];
+
     // IRQ
     assign irq = 3'b000;	// Unused
 
     // LA
-    assign la_data_out = {{(127-BITS){1'b0}}, count};
-    // Assuming LA probes [63:32] are for controlling the count register  
-    assign la_write = ~la_oenb[63:32] & ~{BITS{valid}};
-    // Assuming LA probes [65:64] are for controlling the count clk & reset  
-    assign clk = (~la_oenb[64]) ? la_data_in[64]: wb_clk_i;
-    assign rst = (~la_oenb[65]) ? la_data_in[65]: wb_rst_i;
+    assign la_data_out = 128'b0;/*{
+        16'b0, inst_reg,
+        32'b0,
+        {(32-PC_BITS){1'b0}}, addr,
+        {(32-PC_BITS){1'b0}}, inst_addr
+    };*/
 
-    counter #(
-        .BITS(BITS)
-    ) counter(
-        .clk(clk),
-        .reset(rst),
-        .ready(wbs_ack_o),
-        .valid(valid),
-        .rdata(rdata),
-        .wdata(wbs_dat_i),
-        .wstrb(wstrb),
-        .la_write(la_write),
-        .la_input(la_data_in[63:32]),
-        .count(count)
+    // Assuming LA probes [63:32] are for controlling the count register  
+    // assign la_write = ~la_oenb[63:32] & ~{BITS{valid}};
+    // Assuming LA probes [65:64] are for controlling the count clk & reset  
+    assign clk = /*(~clk_en) ? la_data_in[64] : */wb_clk_i;
+    assign rst = /*(~la_oenb[65]) ? la_data_in[65] : */wb_rst_i;
+
+    reg [15:0] inst_reg;
+    wire inst_regce;
+
+    wire [PC_BITS-1:0] inst_addr;
+    wire [31:0] addr, wdata;
+    wire [3:0] wmask;
+    wire rreq;
+
+    wire [31:0] ram_addr;
+    wire [31:0] rdata;
+    reg [15:0] inst_lat;
+    reg [31:0] rdata_lat;
+
+    assign ram_addr = cpu_reset ? 32'b0 : (({32{(|rreq)}} & addr)
+                                        | ({32{(~|rreq)}} & inst_addr));
+
+    // RAM
+    assign rdata =
+          (rdata_bank0 & {32{(ram_addr[12:11] == 2'h0)}})
+        | (rdata_bank1 & {32{(ram_addr[12:11] == 2'h1)}})
+        | (rdata_bank2 & {32{(ram_addr[12:11] == 2'h2)}})
+        | (rdata_bank3 & {32{(ram_addr[12:11] == 2'h3)}});
+
+    // Bytes 0-2047
+    wire [31:0] rdata_bank0;
+    gf180mcu_sram_512x32 bank0 (
+        .clk(mem_clk),
+        .reset(mem_reset),
+        .en(ram_addr[12:11] == 2'h0),
+        .addr(ram_addr[10:2]),
+        .rdata(rdata_bank0),
+        .wdata(wdata),
+        .wen(wmask == 4'hf)
     );
 
-endmodule
+    // Bytes 2048-4097
+    wire [31:0] rdata_bank1;
+    gf180mcu_sram_512x32 bank1 (
+        .clk(mem_clk),
+        .reset(mem_reset),
+        .en(ram_addr[12:11] == 2'h1),
+        .addr(ram_addr[10:2]),
+        .rdata(rdata_bank1),
+        .wdata(wdata),
+        .wen(wmask == 4'hf)
+    );
 
-module counter #(
-    parameter BITS = 32
-)(
-    input clk,
-    input reset,
-    input valid,
-    input [3:0] wstrb,
-    input [BITS-1:0] wdata,
-    input [BITS-1:0] la_write,
-    input [BITS-1:0] la_input,
-    output ready,
-    output [BITS-1:0] rdata,
-    output [BITS-1:0] count
-);
-    reg ready;
-    reg [BITS-1:0] count;
-    reg [BITS-1:0] rdata;
+    // Bytes 4098-6143
+    wire [31:0] rdata_bank2;
+    gf180mcu_sram_512x32 bank2 (
+        .clk(mem_clk),
+        .reset(mem_reset),
+        .en(ram_addr[12:11] == 2'h2),
+        .addr(ram_addr[10:2]),
+        .rdata(rdata_bank2),
+        .wdata(wdata),
+        .wen(wmask == 4'hf)
+    );
+
+    // Bytes 6144-8191
+    wire [31:0] rdata_bank3;
+    gf180mcu_sram_512x32 bank3 (
+        .clk(mem_clk),
+        .reset(mem_reset),
+        .en(ram_addr[12:11] == 2'h3),
+        .addr(ram_addr[10:2]),
+        .rdata(rdata_bank3),
+        .wdata(wdata),
+        .wen(wmask == 4'hf)
+    );
 
     always @(posedge clk) begin
-        if (reset) begin
-            count <= 0;
-            ready <= 0;
-        end else begin
-            ready <= 1'b0;
-            if (~|la_write) begin
-                count <= count + 1;
-            end
-            if (valid && !ready) begin
-                ready <= 1'b1;
-                rdata <= count;
-                if (wstrb[0]) count[7:0]   <= wdata[7:0];
-                if (wstrb[1]) count[15:8]  <= wdata[15:8];
-                if (wstrb[2]) count[23:16] <= wdata[23:16];
-                if (wstrb[3]) count[31:24] <= wdata[31:24];
-            end else if (|la_write) begin
-                count <= la_write & la_input;
-            end
+        inst_lat <= ~inst_addr[1] ? rdata[15:0] : rdata[31:16];
+        rdata_lat <= rdata;
+        if (inst_regce) begin
+            inst_reg <= inst_lat;
         end
     end
 
+    minimax #(
+        .TRACE(TRACE),
+        .PC_BITS(PC_BITS),
+        .UC_BASE(UC_BASE)
+    ) dut (
+        .clk(clk),
+        .reset(rst),
+        .inst_addr(inst_addr),
+        .inst(inst_reg),
+        .inst_regce(inst_regce),
+        .addr(addr),
+        .wdata(wdata),
+        .rdata(rdata),
+        .wmask(wmask),
+        .rreq(rreq)
+    );
+
+    // Wishbone interface
+    always @(posedge clk) begin
+        ack <= 1'b0;
+        if (valid | ~ack) begin
+            ack <= 1'b1;
+        end
+    end
+
+
 endmodule
+
 `default_nettype wire
