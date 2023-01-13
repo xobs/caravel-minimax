@@ -27,24 +27,16 @@ module gf180mcu_sram_512x32(
             was_en <= ~cen;
     end
 
-    gf180mcu_fd_ip_sram__sram512x8m8wm1 ram0 (
-        .CLK(clk),
-        .CEN(cen),
-        .GWEN(~wen),
-        .WEN(wen_mask),
-        .A(addr),
-        .D(wdata[7:0]),
-        .Q(rdata[7:0])
-    );
-
     gf180mcu_fd_ip_sram__sram512x8m8wm1 ram1 (
         .CLK(clk),
         .CEN(cen),
         .GWEN(~wen),
         .WEN(wen_mask),
         .A(addr),
-        .D(wdata[15:8]),
-        .Q(rdata[15:8])
+        .D(wdata[7:0]),
+        .Q(rdata[7:0]),
+	    .VDD(1'b1),
+	    .VSS(1'b0)
     );
 
     gf180mcu_fd_ip_sram__sram512x8m8wm1 ram2 (
@@ -53,8 +45,10 @@ module gf180mcu_sram_512x32(
         .GWEN(~wen),
         .WEN(wen_mask),
         .A(addr),
-        .D(wdata[23:16]),
-        .Q(rdata[23:16])
+        .D(wdata[15:8]),
+        .Q(rdata[15:8]),
+	    .VDD(1'b1),
+	    .VSS(1'b0)
     );
 
     gf180mcu_fd_ip_sram__sram512x8m8wm1 ram3 (
@@ -63,8 +57,22 @@ module gf180mcu_sram_512x32(
         .GWEN(~wen),
         .WEN(wen_mask),
         .A(addr),
+        .D(wdata[23:16]),
+        .Q(rdata[23:16]),
+	    .VDD(1'b1),
+	    .VSS(1'b0)
+    );
+
+    gf180mcu_fd_ip_sram__sram512x8m8wm1 ram4 (
+        .CLK(clk),
+        .CEN(cen),
+        .GWEN(~wen),
+        .WEN(wen_mask),
+        .A(addr),
         .D(wdata[31:24]),
-        .Q(rdata[31:24])
+        .Q(rdata[31:24]),
+	    .VDD(1'b1),
+	    .VSS(1'b0)
     );
 
 endmodule
