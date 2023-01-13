@@ -15,8 +15,11 @@
     "FP_PIN_ORDER_CFG": "dir::pin_order.cfg",
     "PL_BASIC_PLACEMENT": 0,
     "PL_TARGET_DENSITY": 0.55,
-    "VDD_NETS": ["vccd1"],
-    "GND_NETS": ["vssd1"],
+    "VDD_NETS": ["vdd"],
+    "GND_NETS": ["vss"],
+    "PDN_CFG": "dir::pdn.tcl",
+    "FP_PDN_ENABLE_MACROS_GRID": 1,
+    "FP_PDN_ENABLE_GLOBAL_CONNECTIONS": 1,
     "SYNTH_STRATEGY": "DELAY 4",
     "DIODE_INSERTION_STRATEGY": 4,
     "RUN_CVC": 1,
@@ -44,21 +47,64 @@
     "pdk::gf180mcuC": {
         "STD_CELL_LIBRARY": "gf180mcu_fd_sc_mcu7t5v0",
         "VERILOG_FILES_BLACKBOX": [
-            "/si/work/dependencies/pdks/gf180mcuC/libs.ref/gf180mcu_fd_ip_sram/verilog/gf180mcu_fd_ip_sram__sram512x8m8wm1.v"
+            "ref::$PDKPATH/libs.ref/gf180mcu_fd_ip_sram/verilog/gf180mcu_fd_ip_sram__sram512x8m8wm1.v",
+            "dir::../../verilog/rtl/minimax_rf.v"
         ],
         "EXTRA_LEFS": [
-            "/si/work/dependencies/pdks/gf180mcuC/libs.ref/gf180mcu_fd_ip_sram/lef/gf180mcu_fd_ip_sram__sram512x8m8wm1.lef"
+            "ref::$PDKPATH/libs.ref/gf180mcu_fd_ip_sram/lef/gf180mcu_fd_ip_sram__sram512x8m8wm1.lef",
+            "dir::../../lef/minimax_rf.lef"
         ],
         "EXTRA_GDS_FILES": [
-            "/si/work/dependencies/pdks/gf180mcuC/libs.ref/gf180mcu_fd_ip_sram/gds/gf180mcu_fd_ip_sram__sram512x8m8wm1.gds" 
+            "ref::$PDKPATH/libs.ref/gf180mcu_fd_ip_sram/gds/gf180mcu_fd_ip_sram__sram512x8m8wm1.gds",
+            "dir::../../gds/minimax_rf.gds"
         ],
         "EXTRA_LIBS": [
-            "/si/work/dependencies/pdks/gf180mcuC/libs.ref/gf180mcu_fd_ip_sram/liberty/gf180mcu_fd_ip_sram__sram512x8m8wm1__tt_025C_1v80.lib"
+            "ref::$PDKPATH/libs.ref/gf180mcu_fd_ip_sram/liberty/gf180mcu_fd_ip_sram__sram512x8m8wm1__tt_025C_1v80.lib",
+            "dir::../../lib/minimax_rf.lib"
         ],
         "CLOCK_PERIOD": 24.0,
-        "FP_CORE_UTIL": 40,
+        "FP_CORE_UTIL": 45,
+        "PL_TARGET_DENSITY": 0.50,
         "RT_MAX_LAYER": "Metal4",
         "SYNTH_MAX_FANOUT": 4,
-        "PL_TARGET_DENSITY": 0.45
+        "FP_PDN_MACRO_HOOKS": [
+            "bank1.ram1 vdd vss vdd vss",
+            "bank1.ram2 vdd vss vdd vss",
+            "bank1.ram3 vdd vss vdd vss",
+            "bank1.ram4 vdd vss vdd vss",
+            "bank2.ram1 vdd vss vdd vss",
+            "bank2.ram2 vdd vss vdd vss",
+            "bank2.ram3 vdd vss vdd vss",
+            "bank2.ram4 vdd vss vdd vss",
+            "bank3.ram1 vdd vss vdd vss",
+            "bank3.ram2 vdd vss vdd vss",
+            "bank3.ram3 vdd vss vdd vss",
+            "bank3.ram4 vdd vss vdd vss",
+            "bank4.ram1 vdd vss vdd vss",
+            "bank4.ram2 vdd vss vdd vss",
+            "bank4.ram3 vdd vss vdd vss",
+            "bank4.ram4 vdd vss vdd vss",
+            "minimax.regfile vdd vss vdd vss"
+        ],
+        "FP_PDN_MACROS": [
+            "bank1.ram1",
+            "bank1.ram2",
+            "bank1.ram3",
+            "bank1.ram4",
+            "bank2.ram1",
+            "bank2.ram2",
+            "bank2.ram3",
+            "bank2.ram4",
+            "bank3.ram1",
+            "bank3.ram2",
+            "bank3.ram3",
+            "bank3.ram4",
+            "bank4.ram1",
+            "bank4.ram2",
+            "bank4.ram3",
+            "bank4.ram4",
+            "minimax.regfile"
+        ],
+        "MACRO_PLACEMENT_CFG": "dir::macro_placement.cfg"
     }
 }
