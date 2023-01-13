@@ -9,7 +9,7 @@
     "CLOCK_PORT": "clk",
     "CLOCK_NET": "regfile.clk",
     "FP_SIZING": "absolute",
-    "DIE_AREA": "0 0 2800 200",
+    "DIE_AREA": "0 0 2900 250",
     "FP_PIN_ORDER_CFG": "dir::pin_order.cfg",
     "PL_BASIC_PLACEMENT": 0,
     "PL_TARGET_DENSITY": 0.55,
@@ -25,8 +25,8 @@
     "FP_PDN_ENABLE_MACROS_GRID": 1,
     "FP_PDN_ENABLE_GLOBAL_CONNECTIONS": 1,
     "pdk::sky130*": {
-        "FP_CORE_UTIL": 30,
-        "PL_TARGET_DENSITY": 0.35,
+        "FP_CORE_UTIL": 35,
+        "PL_TARGET_DENSITY": 0.40,
         "RT_MAX_LAYER": "met4",
         "scl::sky130_fd_sc_hd": {
             "CLOCK_PERIOD": 10
@@ -48,8 +48,8 @@
     "pdk::gf180mcuC": {
         "STD_CELL_LIBRARY": "gf180mcu_fd_sc_mcu7t5v0",
         "CLOCK_PERIOD": 60.0,
-        "FP_CORE_UTIL": 35,
-        "PL_TARGET_DENSITY": 0.40,
+        "FP_CORE_UTIL": 28,
+        "PL_TARGET_DENSITY": 0.33,
         "RT_MAX_LAYER": "Metal4",
         "SYNTH_MAX_FANOUT": 5
     }
