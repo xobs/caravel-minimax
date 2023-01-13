@@ -9,14 +9,19 @@ module minimax_rf (
 );
 
   reg [31:0] register_file[31:1];
+  wire addrD_sel;
+  wire addrS_sel;
+
+  assign addrS_sel = (|addrS);
+  assign addrD_sel = (|addrD);
 
   // Look up register file contents combinatorially
-  assign rS = (|addrS) ? register_file[addrS] : 32'b0;
-  assign rD = (|addrD) ? register_file[addrD] : 32'b0;
+  assign rS = addrS_sel ? register_file[addrS] : 32'b0;
+  assign rD = addrD_sel ? register_file[addrD] : 32'b0;
 
   always @(posedge clk) begin
     // writeback
-    if ((|addrD) & we) begin
+    if (addrD_sel & we) begin
       register_file[addrD] <= new_value;
     end
   end
