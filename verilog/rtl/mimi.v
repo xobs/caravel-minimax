@@ -78,6 +78,7 @@ module mimi #(
 );
     wire clk;
     wire rst;
+    reg ack;
 
     wire [`MPRJ_IO_PADS-1:0] io_in;
     wire [`MPRJ_IO_PADS-1:0] io_out;
@@ -105,7 +106,7 @@ module mimi #(
     assign mem_reset = wb_rst_i;
 
     // IO
-    assign io_out = count;
+    assign io_out = 64'b0;
     assign io_oeb = {(`MPRJ_IO_PADS-1){rst}};
 
     wire clk_en;
@@ -141,6 +142,11 @@ module mimi #(
     reg [15:0] inst_lat;
     reg [31:0] rdata_lat;
 
+    wire [31:0] rdata_bank1;
+    wire [31:0] rdata_bank2;
+    wire [31:0] rdata_bank3;
+    // wire [31:0] rdata_bank4;
+
     assign ram_addr = cpu_reset ? 32'b0 : (({32{(|rreq)}} & addr)
                                         | ({32{(~|rreq)}} & inst_addr));
 
@@ -149,11 +155,15 @@ module mimi #(
           (rdata_bank1 & {32{(ram_addr[12:11] == 2'h0)}})
         | (rdata_bank2 & {32{(ram_addr[12:11] == 2'h1)}})
         | (rdata_bank3 & {32{(ram_addr[12:11] == 2'h2)}})
-        | (rdata_bank4 & {32{(ram_addr[12:11] == 2'h3)}});
+        //| (rdata_bank4 & {32{(ram_addr[12:11] == 2'h3)}})
+        ;
 
     // Bytes 0-2047
-    wire [31:0] rdata_bank1;
     gf180mcu_sram_512x32 bank1 (
+`ifdef USE_POWER_PINS
+        .vdd(vdd),	// User area 1 1.8V supply
+        .vss(vss),	// User area 1 digital ground
+`endif
         .clk(mem_clk),
         .reset(mem_reset),
         .en(ram_addr[12:11] == 2'h0),
@@ -164,8 +174,11 @@ module mimi #(
     );
 
     // Bytes 2048-4097
-    wire [31:0] rdata_bank2;
     gf180mcu_sram_512x32 bank2 (
+`ifdef USE_POWER_PINS
+        .vdd(vdd),	// User area 1 1.8V supply
+        .vss(vss),	// User area 1 digital ground
+`endif
         .clk(mem_clk),
         .reset(mem_reset),
         .en(ram_addr[12:11] == 2'h1),
@@ -176,8 +189,11 @@ module mimi #(
     );
 
     // Bytes 4098-6143
-    wire [31:0] rdata_bank3;
     gf180mcu_sram_512x32 bank3 (
+`ifdef USE_POWER_PINS
+        .vdd(vdd),	// User area 1 1.8V supply
+        .vss(vss),	// User area 1 digital ground
+`endif
         .clk(mem_clk),
         .reset(mem_reset),
         .en(ram_addr[12:11] == 2'h2),
@@ -188,8 +204,12 @@ module mimi #(
     );
 
     // Bytes 6144-8191
-    wire [31:0] rdata_bank4;
+    /*
     gf180mcu_sram_512x32 bank4 (
+`ifdef USE_POWER_PINS
+        .vdd(vdd),	// User area 1 1.8V supply
+        .vss(vss),	// User area 1 digital ground
+`endif
         .clk(mem_clk),
         .reset(mem_reset),
         .en(ram_addr[12:11] == 2'h3),
@@ -198,6 +218,7 @@ module mimi #(
         .wdata(wdata),
         .wen(wmask == 4'hf)
     );
+    */
 
     always @(posedge clk) begin
         inst_lat <= ~inst_addr[1] ? rdata[15:0] : rdata[31:16];
@@ -213,8 +234,8 @@ module mimi #(
         .UC_BASE(UC_BASE)
     ) minimax (
 `ifdef USE_POWER_PINS
-    .vdd(vdd),	// User area 1 1.8V supply
-    .vss(vss),	// User area 1 digital ground
+        .vdd(vdd),	// User area 1 1.8V supply
+        .vss(vss),	// User area 1 digital ground
 `endif
         .clk(clk),
         .reset(rst),

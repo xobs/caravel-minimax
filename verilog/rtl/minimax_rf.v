@@ -1,4 +1,8 @@
 module minimax_rf (
+`ifdef USE_POWER_PINS
+    inout vdd,	// User area 1 1.8V supply
+    inout vss,	// User area 1 digital ground
+`endif
     input clk,
     input [4:0] addrS,
     input [4:0] addrD,
