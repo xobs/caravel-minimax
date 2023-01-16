@@ -44,20 +44,24 @@
     },
     "pdk::gf180mcuC": {
         "STD_CELL_LIBRARY": "gf180mcu_fd_sc_mcu7t5v0",
+        "comment": "This works -- $PDKPATH includes $PDK_ROOT as well as the $PDK",
         "VERILOG_FILES_BLACKBOX": [
             "ref::$PDKPATH/libs.ref/gf180mcu_fd_ip_sram/verilog/gf180mcu_fd_ip_sram__sram512x8m8wm1.v",
             "dir::../../verilog/rtl/minimax_rf.v"
         ],
+        "comment": "This works -- $PDKPATH includes $PDK_ROOT as well as the $PDK",
         "EXTRA_LEFS": [
             "ref::$PDKPATH/libs.ref/gf180mcu_fd_ip_sram/lef/gf180mcu_fd_ip_sram__sram512x8m8wm1.lef",
             "dir::../../lef/minimax_rf.lef"
         ],
+        "comment": "This doesn't work -- is pdk_dir broken?",
         "EXTRA_GDS_FILES": [
-            "ref::$PDKPATH/libs.ref/gf180mcu_fd_ip_sram/gds/gf180mcu_fd_ip_sram__sram512x8m8wm1.gds",
+            "pdk_dir::/gf189mcuC/libs.ref/gf180mcu_fd_ip_sram/gds/gf180mcu_fd_ip_sram__sram512x8m8wm1.gds",
             "dir::../../gds/minimax_rf.gds"
         ],
+        "comment": "This works -- the directory is relative to this `config.json` file",
         "EXTRA_LIBS": [
-            "ref::$PDKPATH/libs.ref/gf180mcu_fd_ip_sram/liberty/gf180mcu_fd_ip_sram__sram512x8m8wm1__tt_025C_1v80.lib",
+            "dir::../../../dependencies/pdks/gf180mcuC/libs.ref/gf180mcu_fd_ip_sram/liberty/gf180mcu_fd_ip_sram__sram512x8m8wm1__tt_025C_1v80.lib",
             "dir::../../lib/minimax_rf.lib"
         ],
         "CLOCK_PERIOD": 24.0,
