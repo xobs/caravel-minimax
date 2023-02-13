@@ -14,7 +14,7 @@
     "DIE_AREA": "0 0 3000 2000",
     "FP_PIN_ORDER_CFG": "dir::pin_order.cfg",
     "PL_BASIC_PLACEMENT": 0,
-    "PL_TARGET_DENSITY": 0.55,
+    "PL_TARGET_DENSITY": 0.25,
 
     "VDD_NETS": ["vdd"],
     "GND_NETS": ["vss"],
@@ -46,23 +46,23 @@
         "STD_CELL_LIBRARY": "gf180mcu_fd_sc_mcu7t5v0",
         "VERILOG_FILES_BLACKBOX": [
             "ref::$PDKPATH/libs.ref/gf180mcu_fd_ip_sram/verilog/gf180mcu_fd_ip_sram__sram512x8m8wm1.v",
-            "dir::../../verilog/rtl/minimax_rf.v"
+            "dir::../../ram-32x32-1rw1r/verilog/gl/RAM32_1RW1R.v"
         ],
         "EXTRA_LEFS": [
             "ref::$PDKPATH/libs.ref/gf180mcu_fd_ip_sram/lef/gf180mcu_fd_ip_sram__sram512x8m8wm1.lef",
-            "dir::../../lef/minimax_rf.lef"
+            "dir::../../ram-32x32-1rw1r/lef/RAM32_1RW1R.lef"
         ],
         "EXTRA_GDS_FILES": [
             "ref::$PDKPATH/libs.ref/gf180mcu_fd_ip_sram/gds/gf180mcu_fd_ip_sram__sram512x8m8wm1.gds",
-            "dir::../../gds/minimax_rf.gds"
+            "dir::../../ram-32x32-1rw1r/gds/RAM32_1RW1R.gds"
         ],
         "EXTRA_LIBS": [
-            "ref::$PDKPATH/libs.ref/gf180mcu_fd_ip_sram/liberty/gf180mcu_fd_ip_sram__sram512x8m8wm1__tt_025C_1v80.lib",
-            "dir::../../lib/minimax_rf.lib"
+            "ref::$PDKPATH/libs.ref/gf180mcu_fd_ip_sram/liberty/gf180mcu_fd_ip_sram__sram512x8m8wm1__tt_025C_1v80.lib"
         ],
         "CLOCK_PERIOD": 24.0,
-        "GRT_ADJUSTMENT": 0.27,
-        "FP_CORE_UTIL": 30,
+        "PL_TARGET_DENSITY": 0.25,
+        "GRT_ADJUSTMENT": 0.40,
+        "FP_CORE_UTIL": 35,
         "RT_MAX_LAYER": "Metal4",
         "SYNTH_MAX_FANOUT": 5,
         "FP_PDN_MACRO_HOOKS": [
@@ -78,6 +78,10 @@
             "bank3.ram2 vdd vss vdd vss,",
             "bank3.ram3 vdd vss vdd vss,",
             "bank3.ram4 vdd vss vdd vss,",
+            "bank4.ram1 vdd vss vdd vss,",
+            "bank4.ram2 vdd vss vdd vss,",
+            "bank4.ram3 vdd vss vdd vss,",
+            "bank4.ram4 vdd vss vdd vss,",
             "minimax.regfile_execution vdd vss vdd vss,",
             "minimax.regfile_microcode vdd vss vdd vss"
         ],
@@ -94,6 +98,10 @@
             "bank3.ram2,",
             "bank3.ram3,",
             "bank3.ram4,",
+            "bank4.ram1,",
+            "bank4.ram2,",
+            "bank4.ram3,",
+            "bank4.ram4,",
             "minimax.regfile_execution,",
             "minimax.regfile_microcode"
         ],

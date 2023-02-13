@@ -145,7 +145,7 @@ module mimi #(
     wire [31:0] rdata_bank1;
     wire [31:0] rdata_bank2;
     wire [31:0] rdata_bank3;
-    // wire [31:0] rdata_bank4;
+    wire [31:0] rdata_bank4;
 
     assign ram_addr = cpu_reset ? 32'b0 : (({32{(|rreq)}} & addr)
                                         | ({32{(~|rreq)}} & inst_addr));
@@ -155,7 +155,7 @@ module mimi #(
           (rdata_bank1 & {32{(ram_addr[12:11] == 2'h0)}})
         | (rdata_bank2 & {32{(ram_addr[12:11] == 2'h1)}})
         | (rdata_bank3 & {32{(ram_addr[12:11] == 2'h2)}})
-        //| (rdata_bank4 & {32{(ram_addr[12:11] == 2'h3)}})
+        | (rdata_bank4 & {32{(ram_addr[12:11] == 2'h3)}})
         ;
 
     // Bytes 0-2047
@@ -204,7 +204,6 @@ module mimi #(
     );
 
     // Bytes 6144-8191
-    /*
     gf180mcu_sram_512x32 bank4 (
 `ifdef USE_POWER_PINS
         .vdd(vdd),	// User area 1 1.8V supply
@@ -218,7 +217,6 @@ module mimi #(
         .wdata(wdata),
         .wen(wmask == 4'hf)
     );
-    */
 
     always @(posedge clk) begin
         inst_lat <= ~inst_addr[1] ? rdata[15:0] : rdata[31:16];
