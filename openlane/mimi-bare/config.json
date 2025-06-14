@@ -1,0 +1,112 @@
+{
+    "DESIGN_NAME": "mimi",
+    "DESIGN_IS_CORE": 0,
+    "VERILOG_FILES": [
+        "dir::../../verilog/rtl/defines.v",
+        "dir::../../verilog/rtl/gf180mcu_sram_512x32.v",
+        "dir::../../verilog/rtl/mimi.v",
+        "dir::../../verilog/rtl/minimax/rtl/minimax.v"
+    ],
+    "CLOCK_PERIOD": 10,
+    "CLOCK_PORT": "wb_clk_i",
+    "CLOCK_NET": "minimax.clk",
+    "FP_SIZING": "absolute",
+    "DIE_AREA": "0 0 3000 2000",
+    "FP_PIN_ORDER_CFG": "dir::pin_order.cfg",
+    "PL_BASIC_PLACEMENT": 0,
+    "PL_TARGET_DENSITY": 0.25,
+
+    "VDD_NETS": ["vdd"],
+    "GND_NETS": ["vss"],
+    "SYNTH_STRATEGY": "DELAY 4",
+    "DIODE_INSERTION_STRATEGY": 4,
+    "RUN_CVC": 1,
+    "RUN_MAGIC": 1,
+    "RUN_KLAYOUT": 0,
+    "pdk::sky130*": {
+        "FP_CORE_UTIL": 30,
+        "PL_TARGET_DENSITY": 0.35,
+        "RT_MAX_LAYER": "met4",
+        "scl::sky130_fd_sc_hd": {
+            "CLOCK_PERIOD": 10
+        },
+        "scl::sky130_fd_sc_hdll": {
+            "CLOCK_PERIOD": 10
+        },
+        "scl::sky130_fd_sc_hs": {
+            "CLOCK_PERIOD": 8
+        },
+        "scl::sky130_fd_sc_ls": {
+            "CLOCK_PERIOD": 10,
+            "SYNTH_MAX_FANOUT": 5
+        },
+        "scl::sky130_fd_sc_ms": {
+            "CLOCK_PERIOD": 10
+        }
+    },
+    "pdk::gf180mcuC": {
+        "STD_CELL_LIBRARY": "gf180mcu_fd_sc_mcu7t5v0",
+        "VERILOG_FILES_BLACKBOX": [
+            "ref::$PDKPATH/libs.ref/gf180mcu_fd_ip_sram/verilog/gf180mcu_fd_ip_sram__sram512x8m8wm1.v",
+            "dir::../../ram-32x32-1rw1r/verilog/gl/RAM32_1RW1R.v"
+        ],
+        "EXTRA_LEFS": [
+            "ref::$PDKPATH/libs.ref/gf180mcu_fd_ip_sram/lef/gf180mcu_fd_ip_sram__sram512x8m8wm1.lef",
+            "dir::../../ram-32x32-1rw1r/lef/RAM32_1RW1R.lef"
+        ],
+        "EXTRA_GDS_FILES": [
+            "ref::$PDKPATH/libs.ref/gf180mcu_fd_ip_sram/gds/gf180mcu_fd_ip_sram__sram512x8m8wm1.gds",
+            "dir::../../ram-32x32-1rw1r/gds/RAM32_1RW1R.gds"
+        ],
+        "EXTRA_LIBS": [
+            "ref::$PDKPATH/libs.ref/gf180mcu_fd_ip_sram/liberty/gf180mcu_fd_ip_sram__sram512x8m8wm1__tt_025C_1v80.lib"
+        ],
+        "CLOCK_PERIOD": 24.0,
+        "PL_TARGET_DENSITY": 0.25,
+        "GRT_ADJUSTMENT": 0.40,
+        "FP_CORE_UTIL": 35,
+        "RT_MAX_LAYER": "Metal4",
+        "SYNTH_MAX_FANOUT": 5,
+        "FP_PDN_MACRO_HOOKS": [
+            "bank1.ram1 vdd vss vdd vss,",
+            "bank1.ram2 vdd vss vdd vss,",
+            "bank1.ram3 vdd vss vdd vss,",
+            "bank1.ram4 vdd vss vdd vss,",
+            "bank2.ram1 vdd vss vdd vss,",
+            "bank2.ram2 vdd vss vdd vss,",
+            "bank2.ram3 vdd vss vdd vss,",
+            "bank2.ram4 vdd vss vdd vss,",
+            "bank3.ram1 vdd vss vdd vss,",
+            "bank3.ram2 vdd vss vdd vss,",
+            "bank3.ram3 vdd vss vdd vss,",
+            "bank3.ram4 vdd vss vdd vss,",
+            "bank4.ram1 vdd vss vdd vss,",
+            "bank4.ram2 vdd vss vdd vss,",
+            "bank4.ram3 vdd vss vdd vss,",
+            "bank4.ram4 vdd vss vdd vss,",
+            "minimax.regfile_execution vdd vss vdd vss,",
+            "minimax.regfile_microcode vdd vss vdd vss"
+        ],
+        "FP_PDN_MACROS": [
+            "bank1.ram1,",
+            "bank1.ram2,",
+            "bank1.ram3,",
+            "bank1.ram4,",
+            "bank2.ram1,",
+            "bank2.ram2,",
+            "bank2.ram3,",
+            "bank2.ram4,",
+            "bank3.ram1,",
+            "bank3.ram2,",
+            "bank3.ram3,",
+            "bank3.ram4,",
+            "bank4.ram1,",
+            "bank4.ram2,",
+            "bank4.ram3,",
+            "bank4.ram4,",
+            "minimax.regfile_execution,",
+            "minimax.regfile_microcode"
+        ],
+        "MACRO_PLACEMENT_CFG": "dir::macro_placement.cfg"
+    }
+}
